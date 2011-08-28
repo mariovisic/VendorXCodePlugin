@@ -35,13 +35,21 @@
     NSMenuItem *vendorMenuItem = [NSMenuItem new];
     NSMenu *vendorMenu = [[NSMenu alloc]initWithTitle:@"Vendor"];
 
-    [vendorMenu addItemWithTitle:@"Setup current Project" action:nil keyEquivalent:@""];
     [vendorMenu addItemWithTitle:@"Vendor Install" action:nil keyEquivalent:@""];
     [vendorMenu addItemWithTitle:@"Vendor Update" action:nil keyEquivalent:@""];
+
+    [vendorMenu addItem:[NSMenuItem separatorItem]];
+    
+    [vendorMenu addItemWithTitle:@"Setup current Project" action:nil keyEquivalent:@""];
+    
+    [vendorMenu addItem:[NSMenuItem separatorItem]];
+    
     [vendorMenu addItemWithTitle:@"Find Vendor Packages" action:nil keyEquivalent:@""];
     
+    // Attach the menus created to the main menu.
+    // Insert the Vendor menu 7th down the line (usually just before window).
     [vendorMenuItem setSubmenu:vendorMenu];
-    [mainMenu insertItem:vendorMenuItem atIndex:7]; // Insert 7th down the line (usually just before window).
+    [mainMenu insertItem:vendorMenuItem atIndex:7]; 
  
 }
 

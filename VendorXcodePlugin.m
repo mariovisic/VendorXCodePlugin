@@ -40,7 +40,7 @@
 
     [vendorMenu addItem:[NSMenuItem separatorItem]];
     
-    [vendorMenu addItemWithTitle:@"Setup current Project" action:nil keyEquivalent:@""];
+    [vendorMenu addItemWithTitle:@"Setup Current Project" action:nil keyEquivalent:@""];
     
     [vendorMenu addItem:[NSMenuItem separatorItem]];
     

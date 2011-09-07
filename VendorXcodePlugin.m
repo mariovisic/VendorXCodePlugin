@@ -62,56 +62,57 @@
     
 }
 
++ (void)displayError: (NSString*)error {
+    NSLog(@"ERROR: %@", error);
+}
 
-+ (NSString*)getVendorPath {
+
++ (bool)vendorIsInstalled {
     
     NSTask *task = [[NSTask new] autorelease];
-    NSPipe *pipe = [NSPipe pipe];
-    NSData *standardOutput = nil;
-
+    
     [task setLaunchPath:@"/bin/bash"];
-    [task setStandardOutput:pipe];    
-    [task setArguments: [NSArray arrayWithObjects:@"-l",
-    				 @"-c",
-    				 @"which vendor",
-    				 nil]];
+    [task setArguments:[NSArray arrayWithObjects:@"-l", @"-c", @"vendor", nil]];
     [task launch];
     [task waitUntilExit];
     
     if ([task terminationStatus] == 0) {
-        NSLog(@"Vendor path detected successfully");
-        standardOutput = [[pipe fileHandleForReading] readDataToEndOfFile];
-        return [[NSString alloc] initWithData:standardOutput encoding:NSUTF8StringEncoding];
-    } else {
-        NSLog(@"Had an error, oh noes");
-        return nil;
+        return YES;
     }
+
+    [self displayError:@"The VendorKit RubyGem is not installed, visit vendorkit.com for installation instructions"];
+    return NO;
     
 }
 
 + (void)vendorInstall: (id)sender {
 
-    NSString *vendorPath = [self getVendorPath];
-    NSTask *task = [NSTask new];    
-    
-    vendorPath = [self getVendorPath];
-    
-    NSLog(@"vendor path: %@", vendorPath);
-    
-    if(vendorPath != nil) {
+    if([self vendorIsInstalled]) {
+
+        NSTask *task = [[NSTask new] autorelease];
+        NSPipe *pipe = [NSPipe pipe];
+        NSData *output = nil;
+        NSString *outputString = nil;
         
-        [task setLaunchPath:vendorPath];
-        [task setArguments:[NSArray arrayWithObject:@"install"]];
+        [task setLaunchPath:@"/bin/bash"];
+        [task setArguments:[NSArray arrayWithObjects:@"-l", @"-c", @"vendor", @"install", nil]];
         [task launch];
         [task waitUntilExit];
-         
-         if ([task terminationStatus] == 0) {
-             NSLog(@"Vendor Install OK");
-         } else {
-             NSLog(@"Had an error, oh noes");
-         }
+        
+        output = [[pipe fileHandleForReading] readDataToEndOfFile];
+        outputString = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+        
+        if ([task terminationStatus] == 0) {
+            NSLog(@"return output: %@", outputString);
+        } else {
+            
+            [NSString stringWithFormat:@"Cannot run Vendor Install %@", outputString];
+            [self displayError:@"Cannot run Vendor Install: %@"];
+        }
+        
     }
          
 }
+
 
 @end
